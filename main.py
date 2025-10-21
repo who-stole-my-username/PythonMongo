@@ -1,25 +1,28 @@
 import pymongo
-client = pymongo.MongoClient("mongodb://localhost:27017/")
+import curses
+from curses import wrapper
 
-db = client["kinofilme"]
-collection = db["dvd_samlung"]
+def main(stdscr):
+  curses.noecho()
+  stdscr.keypad(True)
+  curses.curs_set(0)
+  stdscr.clear()
 
-print("+--------------------------------------------+")
-print("|            Was möchten sie tun?            |")
-print("+---+----------------++---+------------------+")
-print("| 1 | Daten abfragen || 2 | Daten bearbeiten |")
-print("+---+----------------++---+------------------+")
+  stdscr.addstr(4, 4, "Test")
 
-while True:
-  choose = input("Auswahl: ")
+  stdscr.refresh()
 
-  if choose == "1":
-    print("1")
-  elif choose == "2":
-    print("2")
-  elif choose == "^C":
-    exit
-  else:
-    print("Keine gültige Auswahl!")
+  curses.echo()
+  curses.curs_set(1)
+  stdscr.keypad(False)
+  stdscr.refresh()
+  curses.endwin()
 
-client.close()
+if __name__ == "__main__":
+  client = pymongo.MongoClient("mongodb://localhost:27017/")
+  db = client["kinofilme"]
+  collection = db["dvd_samlung"]
+  stdscr = curses.initscr()
+  main(stdscr)
+
+  client.close()
