@@ -18,8 +18,9 @@ def main(stdscr):
     db = client["kinofilme"]
     collection = db["dvd_samlung"]
     y, x = stdscr.getmaxyx()
-    stdscr.addstr(4, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
-    stdscr.addstr(y - 4, 4, "1: Filme Abfragen", COLOR_GREEN)
+    stdscr.addstr(2, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
+    stdscr.addstr(4, 4, "Was wollen sie tun?", COLOR_GREEN)
+    stdscr.addstr(y - 4, 4, "1: Nach Filmen suchen", COLOR_GREEN)
     stdscr.addstr(y - 4, x - 25, "2: Filme bearbeiten", COLOR_GREEN)
     stdscr.addstr(y - 2, 4, "3: Filme einfügen", COLOR_GREEN)
     stdscr.addstr(y - 2, x - 25, "4: Filme Löschen", COLOR_GREEN)
@@ -32,6 +33,22 @@ def main(stdscr):
       key = stdscr.getkey()
       if key == "1":
         stdscr.clear()
+        y, x = stdscr.getmaxyx()
+        stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+        stdscr.addstr(4, 4, "Nach welchen Kriterien wollen sie suchen?", COLOR_GREEN)
+        stdscr.addstr(y - 8, 4, "1: Titel", COLOR_GREEN)
+        stdscr.addstr(y - 8, x - 25, "2: Art", COLOR_GREEN)
+        stdscr.addstr(y - 6, 4, "3: Jahr", COLOR_GREEN)
+        stdscr.addstr(y - 6, x - 25, "4: Regisseur", COLOR_GREEN)
+        stdscr.addstr(y - 4, 4, "5: Schauspieler", COLOR_GREEN)
+        stdscr.addstr(y - 4, x - 25, "6: Bewertungen", COLOR_GREEN)
+        stdscr.addstr(y - 2, 4, "7: Mindestalter", COLOR_GREEN)
+        stdscr.addstr(y - 2, x - 25, "8: Bemerkungen", COLOR_GREEN)
+
+        for i in range(x):
+          stdscr.addstr(y - 10, i, "-", COLOR_GREEN)
+          i = i + 1
+
       elif key == "2":
         stdscr.clear()
       elif key == "3":
