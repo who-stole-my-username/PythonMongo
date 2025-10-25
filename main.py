@@ -1,6 +1,7 @@
 import pymongo
 import curses
 from curses import wrapper
+from curses.textpad import Textbox, rectangle
 
 def main(stdscr):
   curses.noecho()
@@ -53,24 +54,14 @@ def main(stdscr):
         keyf = stdscr.getkey()
 
         if keyf:
-          stdscr.clear()
-          stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
-          stdscr.addstr(4, 4, "+", COLOR_GREEN)
-          stdscr.addstr(4, x - 5, "+", COLOR_GREEN)
-          stdscr.addstr(6, 4, "+", COLOR_GREEN)
-          stdscr.addstr(6, x - 5, "+", COLOR_GREEN)
-          stdscr.addstr(5, 4, "| Suchbegriff: ", COLOR_GREEN)
-          stdscr.addstr(5, x - 5, "|", COLOR_GREEN)
-
-          for j in range(4, 7):
-            if j == 5:
-                continue
-            for i in range(5, x - 5):
-              stdscr.addstr(j, i, "-", COLOR_GREEN)
-              i = i + 1
-            j = j + 1
+          stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
+          search = curses.newwin(1, x - 25, 5, 21)
+          searchbox = Textbox(search)
+          rectangle(stdscr, 4, 4, 6, x - 4)
           stdscr.refresh()
-
+          searchbox.edit()
+          searchinput = searchbox.gather()
+          stdscr.getch()
 
       elif key == "2":
         stdscr.clear()
