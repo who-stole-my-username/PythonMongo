@@ -12,16 +12,22 @@ def main(stdscr):
   curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
   COLOR_GREEN = curses.color_pair(1)
   COLOR_ERROR = curses.color_pair(2)
-  
+
   try:
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["kinofilme"]
     collection = db["dvd_samlung"]
+    y, x = stdscr.getmaxyx()
     stdscr.addstr(4, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
-    stdscr.addstr(8, 4, "1: Daten Abfragen", COLOR_GREEN)
-    stdscr.addstr(10, 4, "2: Daten Löschen", COLOR_GREEN)
-    stdscr.addstr(12, 4, "3: Daten bearbeiten", COLOR_GREEN)
-    
+    stdscr.addstr(y - 4, 4, "1: Filme Abfragen", COLOR_GREEN)
+    stdscr.addstr(y - 4, x - 25, "2: Filme bearbeiten", COLOR_GREEN)
+    stdscr.addstr(y - 2, 4, "3: Filme einfügen", COLOR_GREEN)
+    stdscr.addstr(y - 2, x - 25, "4: Filme Löschen", COLOR_GREEN)
+
+    for i in range(x):
+      stdscr.addstr(y - 6, i, "-", COLOR_GREEN)
+      i = i + 1
+
     while True:
       key = stdscr.getkey()
       if key == "1":
@@ -34,8 +40,9 @@ def main(stdscr):
         stdscr.clear()
 
 
-  except Exception:
-    stdscr.addstr(4, 4, "Error", COLOR_ERROR)
+  except Exception as e:
+    stdscr.addstr(4, 4, "Error:", COLOR_ERROR)
+    stdscr.addstr(4, 11, str(e), COLOR_ERROR)
 
   finally:
     stdscr.refresh()
