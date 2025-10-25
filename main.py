@@ -44,10 +44,33 @@ def main(stdscr):
         stdscr.addstr(y - 4, x - 25, "6: Bewertungen", COLOR_GREEN)
         stdscr.addstr(y - 2, 4, "7: Mindestalter", COLOR_GREEN)
         stdscr.addstr(y - 2, x - 25, "8: Bemerkungen", COLOR_GREEN)
+        stdscr.refresh()
 
         for i in range(x):
           stdscr.addstr(y - 10, i, "-", COLOR_GREEN)
           i = i + 1
+
+        keyf = stdscr.getkey()
+
+        if keyf:
+          stdscr.clear()
+          stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+          stdscr.addstr(4, 4, "+", COLOR_GREEN)
+          stdscr.addstr(4, x - 5, "+", COLOR_GREEN)
+          stdscr.addstr(6, 4, "+", COLOR_GREEN)
+          stdscr.addstr(6, x - 5, "+", COLOR_GREEN)
+          stdscr.addstr(5, 4, "| Suchbegriff: ", COLOR_GREEN)
+          stdscr.addstr(5, x - 5, "|", COLOR_GREEN)
+
+          for j in range(4, 7):
+            if j == 5:
+                continue
+            for i in range(5, x - 5):
+              stdscr.addstr(j, i, "-", COLOR_GREEN)
+              i = i + 1
+            j = j + 1
+          stdscr.refresh()
+
 
       elif key == "2":
         stdscr.clear()
