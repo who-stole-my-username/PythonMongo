@@ -8,21 +8,19 @@ def main(stdscr):
   curses.curs_set(0)
   stdscr.clear()
 
-  stdscr.addstr(4, 4, "Test")
+  try:
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["kinofilme"]
+    collection = db["dvd_samlung"]
+    stdscr.addstr(4, 4, "Test")
 
-  stdscr.refresh()
+  except Exception:
+    stdscr.addstr(4, 4, "Error")
 
-  curses.echo()
-  curses.curs_set(1)
-  stdscr.keypad(False)
-  stdscr.refresh()
-  curses.endwin()
+  finally:
+    stdscr.refresh()
+    stdscr.getch()
+    client.close()
 
 if __name__ == "__main__":
-  client = pymongo.MongoClient("mongodb://localhost:27017/")
-  db = client["kinofilme"]
-  collection = db["dvd_samlung"]
-  stdscr = curses.initscr()
-  main(stdscr)
-
-  client.close()
+  wrapper(main)
