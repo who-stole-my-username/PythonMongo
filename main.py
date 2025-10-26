@@ -80,13 +80,27 @@ def main(stdscr):
             stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
             search = curses.newwin(1, x - 25, 5, 21)
             searchbox = Textbox(search)
-            result = curses.newpad(1000, x - 5)
+            result = curses.newpad(10000, x - 7)
             rectangle(stdscr, 4, 4, 6, x - 4)
             rectangle(stdscr, 8, 4, y - 2, x - 4)
             stdscr.refresh()
             searchbox.edit()
             searchinput = searchbox.gather().replace("\n", "").strip()
-            results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
+
+            if option == "rating":
+              try:
+                searchinputfloat = float(searchinput)
+                results = collection.find({option: searchinputfloat})
+              except ValueError:
+                result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
+            elif option in ["jahr", "min_alter"]:
+              try:
+                searchinputnum = int(searchinput)
+                results = collection.find({option: searchinputnum})
+              except ValueError:
+                result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
+            else:
+              results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
 
             l = 0
 
@@ -99,7 +113,7 @@ def main(stdscr):
               except curses.error:
                 result.addstr(0, 0, "Error", COLOR_ERROR)
 
-            result.refresh(0, 0, 9, 5, y - 3, x - 5)
+            result.refresh(0, 0, 9, 5, y - 3, x - 7)
 
 
 
