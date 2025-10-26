@@ -1,5 +1,6 @@
 import pymongo
 import curses
+import re
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 
@@ -51,17 +52,56 @@ def main(stdscr):
           stdscr.addstr(y - 10, i, "-", COLOR_GREEN)
           i = i + 1
 
-        keyf = stdscr.getkey()
+        key = 0
 
-        if keyf:
-          stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
-          search = curses.newwin(1, x - 25, 5, 21)
-          searchbox = Textbox(search)
-          rectangle(stdscr, 4, 4, 6, x - 4)
-          stdscr.refresh()
-          searchbox.edit()
-          searchinput = searchbox.gather()
-          stdscr.getch()
+        while True:
+          keyf = stdscr.getkey()
+          if keyf:
+
+            if keyf == "1":
+              option = "name"
+            elif keyf == "2":
+              option = "art"
+            elif keyf == "3":
+              option = "jahr"
+            elif keyf == "4":
+              option = "regisseur"
+            elif keyf == "5":
+              option = "schauspieler"
+            elif keyf == "6":
+              option = "rating"
+            elif keyf == "7":
+              option = "min_alter"
+            elif keyf == "8":
+              option = "bemerkung"
+
+            stdscr.clear()
+            stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+            stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
+            search = curses.newwin(1, x - 25, 5, 21)
+            searchbox = Textbox(search)
+            result = curses.newpad(1000, x - 5)
+            rectangle(stdscr, 4, 4, 6, x - 4)
+            rectangle(stdscr, 8, 4, y - 2, x - 4)
+            stdscr.refresh()
+            searchbox.edit()
+            searchinput = searchbox.gather().replace("\n", "").strip()
+            results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
+
+            l = 0
+
+            for i in results:
+              resultlist = str(i)
+
+              try:
+                result.addstr(l, 1, resultlist, COLOR_GREEN)
+                l = l + 4
+              except curses.error:
+                result.addstr(0, 0, "Error", COLOR_ERROR)
+
+            result.refresh(0, 0, 9, 5, y - 3, x - 5)
+
+
 
       elif key == "2":
         stdscr.clear()
