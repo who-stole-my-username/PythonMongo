@@ -4,6 +4,20 @@ import re
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 
+def dmain(stdscr, COLOR_GREEN):
+    stdscr.clear()
+    y, x = stdscr.getmaxyx()
+    stdscr.addstr(2, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
+    stdscr.addstr(4, 4, "Was wollen sie tun?", COLOR_GREEN)
+    stdscr.addstr(y - 4, 4, "1: Nach Filmen suchen", COLOR_GREEN)
+    stdscr.addstr(y - 4, x - 25, "2: Filme bearbeiten", COLOR_GREEN)
+    stdscr.addstr(y - 2, 4, "3: Filme einfügen", COLOR_GREEN)
+    stdscr.addstr(y - 2, x - 25, "4: Filme Löschen", COLOR_GREEN)
+
+    for i in range(x):
+      stdscr.addstr(y - 6, i, "-", COLOR_GREEN)
+      i = i + 1
+
 def main(stdscr):
   curses.noecho()
   stdscr.keypad(True)
@@ -19,17 +33,8 @@ def main(stdscr):
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["kinofilme"]
     collection = db["dvd_samlung"]
-    y, x = stdscr.getmaxyx()
-    stdscr.addstr(2, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
-    stdscr.addstr(4, 4, "Was wollen sie tun?", COLOR_GREEN)
-    stdscr.addstr(y - 4, 4, "1: Nach Filmen suchen", COLOR_GREEN)
-    stdscr.addstr(y - 4, x - 25, "2: Filme bearbeiten", COLOR_GREEN)
-    stdscr.addstr(y - 2, 4, "3: Filme einfügen", COLOR_GREEN)
-    stdscr.addstr(y - 2, x - 25, "4: Filme Löschen", COLOR_GREEN)
 
-    for i in range(x):
-      stdscr.addstr(y - 6, i, "-", COLOR_GREEN)
-      i = i + 1
+    dmain(stdscr, COLOR_GREEN)
 
     while True:
       key = stdscr.getkey()
@@ -77,6 +82,7 @@ def main(stdscr):
 
             stdscr.clear()
             stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+            stdscr.addstr(2, 23, "Q: Zurück", COLOR_GREEN | curses.A_DIM)
             stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
             search = curses.newwin(1, x - 25, 5, 21)
             searchbox = Textbox(search)
