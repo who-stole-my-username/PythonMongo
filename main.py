@@ -9,6 +9,7 @@ def dmain(stdscr, COLOR_GREEN):
     y, x = stdscr.getmaxyx()
     stdscr.addstr(2, 4, "DVD Samlung Projekt", COLOR_GREEN | curses.A_UNDERLINE)
     stdscr.addstr(4, 4, "Was wollen sie tun?", COLOR_GREEN)
+    stdscr.addstr(y - 8, 4, "Q: Zurück -> funktioniert immer", COLOR_GREEN | curses.A_DIM)
     stdscr.addstr(y - 4, 4, "1: Nach Filmen suchen", COLOR_GREEN)
     stdscr.addstr(y - 4, x - 25, "2: Filme bearbeiten", COLOR_GREEN)
     stdscr.addstr(y - 2, 4, "3: Filme einfügen", COLOR_GREEN)
@@ -29,6 +30,8 @@ def main(stdscr):
   COLOR_GREEN = curses.color_pair(1)
   COLOR_ERROR = curses.color_pair(2)
 
+  state = "main"
+
   try:
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["kinofilme"]
@@ -38,97 +41,107 @@ def main(stdscr):
 
     while True:
       key = stdscr.getkey()
-      if key == "1":
-        stdscr.clear()
-        y, x = stdscr.getmaxyx()
-        stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
-        stdscr.addstr(4, 4, "Nach welchen Kriterien wollen sie suchen?", COLOR_GREEN)
-        stdscr.addstr(y - 8, 4, "1: Titel", COLOR_GREEN)
-        stdscr.addstr(y - 8, x - 25, "2: Art", COLOR_GREEN)
-        stdscr.addstr(y - 6, 4, "3: Jahr", COLOR_GREEN)
-        stdscr.addstr(y - 6, x - 25, "4: Regisseur", COLOR_GREEN)
-        stdscr.addstr(y - 4, 4, "5: Schauspieler", COLOR_GREEN)
-        stdscr.addstr(y - 4, x - 25, "6: Bewertungen", COLOR_GREEN)
-        stdscr.addstr(y - 2, 4, "7: Mindestalter", COLOR_GREEN)
-        stdscr.addstr(y - 2, x - 25, "8: Bemerkungen", COLOR_GREEN)
-        stdscr.refresh()
 
-        for i in range(x):
-          stdscr.addstr(y - 10, i, "-", COLOR_GREEN)
-          i = i + 1
+      if key.lower() == "q":
+        if state == "main":
+          break
+        state = "main"
+        dmain(stdscr, COLOR_GREEN)
+        continue
 
-        key = 0
+      if state == "main":
+        if key == "1":
+          state = "search"
+          stdscr.clear()
+          y, x = stdscr.getmaxyx()
+          stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+          stdscr.addstr(4, 4, "Nach welchen Kriterien wollen sie suchen?", COLOR_GREEN)
+          stdscr.addstr(y - 8, 4, "1: Titel", COLOR_GREEN)
+          stdscr.addstr(y - 8, x - 25, "2: Art", COLOR_GREEN)
+          stdscr.addstr(y - 6, 4, "3: Jahr", COLOR_GREEN)
+          stdscr.addstr(y - 6, x - 25, "4: Regisseur", COLOR_GREEN)
+          stdscr.addstr(y - 4, 4, "5: Schauspieler", COLOR_GREEN)
+          stdscr.addstr(y - 4, x - 25, "6: Bewertungen", COLOR_GREEN)
+          stdscr.addstr(y - 2, 4, "7: Mindestalter", COLOR_GREEN)
+          stdscr.addstr(y - 2, x - 25, "8: Bemerkungen", COLOR_GREEN)
+          stdscr.refresh()
 
-        while True:
-          keyf = stdscr.getkey()
-          if keyf:
+          for i in range(x):
+            stdscr.addstr(y - 10, i, "-", COLOR_GREEN)
+            i = i + 1
 
-            if keyf == "1":
-              option = "name"
-            elif keyf == "2":
-              option = "art"
-            elif keyf == "3":
-              option = "jahr"
-            elif keyf == "4":
-              option = "regisseur"
-            elif keyf == "5":
-              option = "schauspieler"
-            elif keyf == "6":
-              option = "rating"
-            elif keyf == "7":
-              option = "min_alter"
-            elif keyf == "8":
-              option = "bemerkung"
+        elif key == "2":
+          state = "bearbeiten"
+          stdscr.clear()
+        elif key == "3":
+          state = "einfügen"
+          stdscr.clear()
+        elif key == "4":
+          state = "löschen"
+          stdscr.clear()
 
-            stdscr.clear()
-            stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
-            stdscr.addstr(2, 23, "Q: Zurück", COLOR_GREEN | curses.A_DIM)
-            stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
-            search = curses.newwin(1, x - 25, 5, 21)
-            searchbox = Textbox(search)
-            result = curses.newpad(10000, x - 7)
-            rectangle(stdscr, 4, 4, 6, x - 4)
-            rectangle(stdscr, 8, 4, y - 2, x - 4)
-            stdscr.refresh()
-            searchbox.edit()
-            searchinput = searchbox.gather().replace("\n", "").strip()
+      elif state == "search":
+        if key == "1":
+          option = "name"
+        elif key == "2":
+          option = "art"
+        elif key == "3":
+          option = "jahr"
+        elif key == "4":
+          option = "regisseur"
+        elif key == "5":
+          option = "schauspieler"
+        elif key == "6":
+          option = "rating"
+        elif key == "7":
+          option = "min_alter"
+        elif key == "8":
+          option = "bemerkung"
 
-            if option == "rating":
-              try:
-                searchinputfloat = float(searchinput)
-                results = collection.find({option: searchinputfloat})
-              except ValueError:
-                result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
-            elif option in ["jahr", "min_alter"]:
-              try:
-                searchinputnum = int(searchinput)
-                results = collection.find({option: searchinputnum})
-              except ValueError:
-                result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
-            else:
-              results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
+        if option:
+          stdscr.clear()
+          stdscr.addstr(2, 4, "Nach Filmen suchen", COLOR_GREEN | curses.A_UNDERLINE)
+          stdscr.addstr(5, 5, "1: Suchbegriff:", COLOR_GREEN)
+          stdscr.addstr(2, 24, option, COLOR_GREEN | curses.A_DIM)
+          search = curses.newwin(1, x - 25, 5, 21)
+          searchbox = Textbox(search)
+          result = curses.newpad(10000, x - 7)
+          rectangle(stdscr, 4, 4, 6, x - 4)
+          rectangle(stdscr, 8, 4, y - 2, x - 4)
+          stdscr.refresh()
+          searchbox.edit()
+          searchinput = searchbox.gather().replace("\n", "").strip()
 
-            l = 0
+          if option == "rating":
+            try:
+              searchinputfloat = float(searchinput)
+              results = collection.find({option: searchinputfloat})
+            except ValueError:
+              result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
+          elif option in ["jahr", "min_alter"]:
+            try:
+              searchinputnum = int(searchinput)
+              results = collection.find({option: searchinputnum})
+            except ValueError:
+              result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
+          else:
+            results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
 
-            for i in results:
-              resultlist = str(i)
+          l = 0
 
-              try:
-                result.addstr(l, 1, resultlist, COLOR_GREEN)
-                l = l + 4
-              except curses.error:
-                result.addstr(0, 0, "Error", COLOR_ERROR)
+          for i in results:
+            resultlist = str(i)
 
-            result.refresh(0, 0, 9, 5, y - 3, x - 7)
+            try:
+              result.addstr(l, 1, resultlist, COLOR_GREEN)
+              l = l + 4
+            except curses.error:
+              result.addstr(0, 0, "Error", COLOR_ERROR)
+
+          result.refresh(0, 0, 9, 5, y - 3, x - 7)
 
 
 
-      elif key == "2":
-        stdscr.clear()
-      elif key == "3":
-        stdscr.clear()
-      elif key == "4":
-        stdscr.clear()
 
 
   except Exception as e:
