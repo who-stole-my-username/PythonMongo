@@ -89,8 +89,57 @@ def main(stdscr):
             i = i + 1
 
         elif key == "3":
-          state = "einfügen"
           stdscr.clear()
+          y, x = stdscr.getmaxyx()
+          stdscr.addstr(2, 4, "Filme einfügen", COLOR_GREEN | curses.A_UNDERLINE)
+          stdscr.addstr(5, 5, "1: Titel:", COLOR_GREEN)
+          stdscr.addstr(9, 5, "2: Art:", COLOR_GREEN)
+          stdscr.addstr(13, 5, "3: Jahr:", COLOR_GREEN)
+          stdscr.addstr(17, 5, "4: Regisseur:", COLOR_GREEN)
+          stdscr.addstr(21, 5, "5: Schauspieler:", COLOR_GREEN)
+          stdscr.addstr(25, 5, "6: Bewertung:", COLOR_GREEN)
+          stdscr.addstr(29, 5, "7: Mindestalter", COLOR_GREEN)
+          stdscr.addstr(33, 5, "8: Bemerkung", COLOR_GREEN)
+
+          aname = curses.newwin(1, x - 19, 5, 14)
+          aart = curses.newwin(1, x - 19, 9, 14)
+          ajahr = curses.newwin(1, x - 19, 13, 14)
+          aregisseur = curses.newwin(1, x - 19, 17, 14)
+          aschauspieler = curses.newwin(1, x - 19, 21, 14)
+          abewertungen = curses.newwin(1, x - 19, 25, 14)
+          amin_alter = curses.newwin(1, x - 19, 29, 14)
+          abemerkungen = curses.newwin(1, x - 19, 33, 14)
+
+          anamebox = Textbox(aname)
+          aartbox = Textbox(aart)
+          ajahrbox = Textbox(ajahr)
+          aregisseurbox = Textbox(aregisseur)
+          aschauspielerbox = Textbox(aschauspieler)
+          abewertungenbox = Textbox(abewertungen)
+          amin_alterbox = Textbox(amin_alter)
+          abemerkungenbox = Textbox(abemerkungen)
+
+          rectangle(stdscr, 4, 4, 6, x - 4)
+          rectangle(stdscr, 8, 4, 10, x - 4)
+          rectangle(stdscr, 12, 4, 14, x - 4)
+          rectangle(stdscr, 16, 4, 18, x - 4)
+          rectangle(stdscr, 20, 4, 22, x - 4)
+          rectangle(stdscr, 24, 4, 26, x - 4)
+          rectangle(stdscr, 28, 4, 30, x - 4)
+          rectangle(stdscr, 32, 4, 34, x - 4)
+
+          stdscr.refresh()
+
+          anamebox.edit()
+          aartbox.edit()
+          ajahrbox.edit()
+          aregisseurbox.edit()
+          aschauspielerbox.edit()
+          abewertungenbox.edit()
+          amin_alterbox.edit()
+          abemerkungenbox.edit()
+
+
         elif key == "4":
           state = "löschen"
           stdscr.clear()
