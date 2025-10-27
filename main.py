@@ -90,6 +90,7 @@ def main(stdscr):
 
         elif key == "3":
           stdscr.clear()
+          state = "einfügen"
           y, x = stdscr.getmaxyx()
           stdscr.addstr(2, 4, "Filme einfügen", COLOR_GREEN | curses.A_UNDERLINE)
           stdscr.addstr(5, 5, "1: Titel:", COLOR_GREEN)
@@ -98,17 +99,17 @@ def main(stdscr):
           stdscr.addstr(17, 5, "4: Regisseur:", COLOR_GREEN)
           stdscr.addstr(21, 5, "5: Schauspieler:", COLOR_GREEN)
           stdscr.addstr(25, 5, "6: Bewertung:", COLOR_GREEN)
-          stdscr.addstr(29, 5, "7: Mindestalter", COLOR_GREEN)
-          stdscr.addstr(33, 5, "8: Bemerkung", COLOR_GREEN)
+          stdscr.addstr(29, 5, "7: Mindestalter:", COLOR_GREEN)
+          stdscr.addstr(33, 5, "8: Bemerkung:", COLOR_GREEN)
 
-          aname = curses.newwin(1, x - 19, 5, 14)
-          aart = curses.newwin(1, x - 19, 9, 14)
+          aname = curses.newwin(1, x - 20, 5, 15)
+          aart = curses.newwin(1, x - 18, 9, 13)
           ajahr = curses.newwin(1, x - 19, 13, 14)
-          aregisseur = curses.newwin(1, x - 19, 17, 14)
-          aschauspieler = curses.newwin(1, x - 19, 21, 14)
-          abewertungen = curses.newwin(1, x - 19, 25, 14)
-          amin_alter = curses.newwin(1, x - 19, 29, 14)
-          abemerkungen = curses.newwin(1, x - 19, 33, 14)
+          aregisseur = curses.newwin(1, x - 24, 17, 19)
+          aschauspieler = curses.newwin(1, x - 27, 21, 22)
+          abewertungen = curses.newwin(1, x - 24, 25, 19)
+          amin_alter = curses.newwin(1, x - 27, 29, 22)
+          abemerkungen = curses.newwin(1, x - 24, 33, 19)
 
           anamebox = Textbox(aname)
           aartbox = Textbox(aart)
@@ -139,6 +140,27 @@ def main(stdscr):
           amin_alterbox.edit()
           abemerkungenbox.edit()
 
+          anameinput = anamebox.gather().replace("\n", "").strip()
+          aartinput = aartbox.gather().replace("\n", "").strip()
+          ajahrinput = ajahrbox.gather().replace("\n", "").strip()
+          aregisseurinput = aregisseurbox.gather().replace("\n", "").strip()
+          aschauspielerinput = aschauspielerbox.gather().replace("\n", "").strip()
+          abewertungeninput = abewertungenbox.gather().replace("\n", "").strip()
+          amin_alterinput = amin_alterbox.gather().replace("\n", "").strip()
+          abemerkungeninput = abemerkungenbox.gather().replace("\n", "").strip()
+
+          try:
+            aartlist = [aartinput]
+            aschauspielerlist = [aschauspielerinput]
+            ajahrnum = int(ajahrinput)
+            abewertungennum = float(abewertungeninput)
+            amin_alternum = int(amin_alterinput)
+            collection.insert_one({"name": anameinput, "art": aartlist, "jahr": ajahrnum, "regisseur": aregisseurinput, "schauspieler": aschauspielerlist, "rating": abewertungennum, "min_alter": amin_alternum, "bemerkungen": abemerkungeninput},)
+            stdscr.addstr(36, 4, "Film hinzugefügt!", COLOR_GREEN)
+          except ValueError:
+            stdscr.addstr(36, 4, "Error, ungültiger Input!", COLOR_ERROR)
+          except:
+            stdscr.addstr(36, 4, "Error, Film nicht hinzugefügt!", COLOR_ERROR)
 
         elif key == "4":
           state = "löschen"
