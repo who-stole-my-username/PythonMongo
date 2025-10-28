@@ -1,6 +1,5 @@
 import pymongo
 import curses
-import time
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 
@@ -168,7 +167,7 @@ def main(stdscr):
           stdscr.clear()
           y, x = stdscr.getmaxyx()
           stdscr.addstr(2, 4, "Filme Löschen", COLOR_GREEN | curses.A_UNDERLINE)
-          stdscr.addstr(5, 5, "1: Title des zu löschenden Filmes:", COLOR_GREEN)
+          stdscr.addstr(5, 5, "1: Titel des zu löschenden Filmes:", COLOR_GREEN)
           löschen = curses.newwin(1, x - 45, 5, 40)
           löschbox = Textbox(löschen)
           rectangle(stdscr, 4, 4, 6, x - 4)
