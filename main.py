@@ -257,7 +257,7 @@ def main(stdscr):
           result.addstr(l, 1, "---------------------------------------------------------------------------------------------------------------", COLOR_GREEN)
 
           if l2 == 0:
-            result.addstr(0, 1, "Keine Filme gefunden!", COLOR_ERROR)
+            result.addstr(0, 1, "Keine Filme gefunden!\n", COLOR_ERROR)
 
           result.refresh(0, 0, 9, 5, y - 3, x - 7)
 
