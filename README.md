@@ -21,7 +21,7 @@ Python Mongo ist eine Applikation, welche Daten zu einer Mongo Daten Bank hinzuf
 4. Öffnen sie Ihr Terminal und gehen sie in den Ordner mit ihrer Datenbank
 5. Kopieren Sie das .py file und das .json file hier hinein
 6. Starten sie den mongodb Service mit `sudo systemctl start mongodb`
-7. Schreiben Sie `mongoimport --db kinofilme --collection dvd_sammlung --file /pfad/zu/Ihrem/.json/file`
+7. Schreiben Sie `mongoimport --db kinofilme --collection dvd_sammlung --file /pfad/zu/Ihrem/.json/file --jsonArray`
 8. Schreiben Sie `python main.py`
 
 <hr>
