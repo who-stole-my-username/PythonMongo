@@ -1,5 +1,6 @@
 import pymongo
 import curses
+import time
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 
@@ -228,14 +229,14 @@ def main(stdscr):
             except ValueError:
               result.addstr(0, 0, "Error, keine gültige Zahl!", COLOR_ERROR)
           else:
-            results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
+            results = collection.find({option: {"$regex": searchinput, "$options": "i"}}).limit(3)
 
           l = 0
           l2 = 0
 
           for i in results:
             l2 = l2 + 1
-            result.addstr(l, 0, "---------------------------------------------------------------------------------------------------------------", COLOR_GREEN)
+            result.addstr(l, 1, "---------------------------------------------------------------------------------------------------------------", COLOR_GREEN)
             l = l + 1
             result.addstr(l, 1, f"Titel: {i.get("name", "-")}", COLOR_GREEN)
             l = l + 1
@@ -253,7 +254,8 @@ def main(stdscr):
             l = l + 1
             result.addstr(l, 1, f"Bemerkung: {i.get("bemerkungen", "-")}", COLOR_GREEN)
             l = l + 1
-          
+          result.addstr(l, 1, "---------------------------------------------------------------------------------------------------------------", COLOR_GREEN)
+
           if l2 == 0:
             result.addstr(0, 1, "Keine Filme gefunden!", COLOR_ERROR)
 
