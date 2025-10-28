@@ -208,7 +208,7 @@ def main(stdscr):
           stdscr.addstr(2, 24, option, COLOR_GREEN | curses.A_DIM)
           search = curses.newwin(1, x - 25, 5, 21)
           searchbox = Textbox(search)
-          result = curses.newpad(10000, x - 7)
+          result = curses.newpad(10000, x - 5)
           rectangle(stdscr, 4, 4, 6, x - 4)
           rectangle(stdscr, 8, 4, y - 2, x - 4)
           stdscr.refresh()
@@ -231,15 +231,31 @@ def main(stdscr):
             results = collection.find({option: {"$regex": searchinput, "$options": "i"}})
 
           l = 0
+          l2 = 0
 
           for i in results:
-            resultlist = str(i)
-
-            try:
-              result.addstr(l, 1, resultlist, COLOR_GREEN)
-              l = l + 4
-            except curses.error:
-              result.addstr(0, 0, "Error", COLOR_ERROR)
+            l2 = l2 + 1
+            result.addstr(l, 0, "---------------------------------------------------------------------------------------------------------------", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Titel: {i.get("name", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Art: {i.get("art", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Jahr: {i.get("jahr", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Regisseur: {i.get("regisseur", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Schauspieler: {i.get("schauspieler", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Bewertung: {i.get("rating", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Mindestalter: {i.get("min_alter", "-")}", COLOR_GREEN)
+            l = l + 1
+            result.addstr(l, 1, f"Bemerkung: {i.get("bemerkungen", "-")}", COLOR_GREEN)
+            l = l + 1
+          
+          if l2 == 0:
+            result.addstr(0, 1, "Keine Filme gefunden!", COLOR_ERROR)
 
           result.refresh(0, 0, 9, 5, y - 3, x - 7)
 
