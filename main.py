@@ -165,6 +165,23 @@ def main(stdscr):
         elif key == "4":
           state = "löschen"
           stdscr.clear()
+          y, x = stdscr.getmaxyx()
+          stdscr.addstr(2, 4, "Filme Löschen", COLOR_GREEN | curses.A_UNDERLINE)
+          stdscr.addstr(5, 5, "1: Title des zu löschenden Filmes:", COLOR_GREEN)
+          löschen = curses.newwin(1, x - 45, 5, 40)
+          löschbox = Textbox(löschen)
+          rectangle(stdscr, 4, 4, 6, x - 4)
+          stdscr.refresh()
+          löschbox.edit()
+
+          löschinput = löschbox.gather().replace("\n", "").strip()
+
+          try:
+            collection.delete_one({"name": {"$regex": löschinput, "$options": "i"}})
+            stdscr.addstr(8, 4, "Film wurde gelöscht!", COLOR_GREEN)
+          except:
+            stdscr.addstr(8, 4, "Film konnte nicht gelöscht werden!", COLOR_ERROR)
+
 
       elif state == "suchen":
         if key == "1":
